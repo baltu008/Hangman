@@ -71,7 +71,9 @@ var dict;
 // Make an AJAX request to the server for the dictionary.txt file
 $(function () {
   $.ajax({
-    url: "dictionary.txt",
+    headers: { "Accept" : "application/json"},
+    crossDomain: true,
+    url: "dictionary.txt", // add .txt file of dictionary words (will do in the future)
     type: "get",
     dataType: "text",
     success: function (data) {
@@ -98,6 +100,8 @@ var word;
 var hiddenWord;
 var mistakes;
 var missed;
+var triesAllocate = 10;
+var triesRemain = triesAllocate;
 
 function init() {
   missed = [];
@@ -106,9 +110,11 @@ function init() {
   }
   else {
      word = ["yahoo", "google", "javascript", "didgeridoo", "telecaster"][Math.random()*5|0];
+     console.log(word);
   }
   hiddenWord  = word.replace(/./g, "_");
   mistakes = 0;
+  triesRemain = triesAllocate;
   hiddenBox.innerText = hiddenWord;
   drawHangman(mistakes);
 }
@@ -124,6 +130,7 @@ function guess(letter) {
       correct = true;
     }
   }
+  if (!correct) missed.push(letter);
   
   return correct;
 }
@@ -132,28 +139,33 @@ guessBox.addEventListener("keydown", function (e) {
   if (e.keyCode === 13 && e.target.value.length === 1) {
     if (!guess(e.target.value)) {
       mistakes++;
-      missed.push(e.target.value);
+      triesRemain--;
       drawHangman(mistakes);
     }
-    
+    console.log(triesAllocate, mistakes);
     if (word === hiddenWord) {
       output.innerText="Correct! The word was " + word;
-      init();
-    } else if (mistakes > 9) {
+      return init();
+    }
+    else if (mistakes >= triesAllocate) {
       output.innerText="Sorry, the correct answer was... " + word + " !";
-      init();
+      return init();
     }
     else if (missed.length) {
       output.innerText = "Missed letters: " + missed.join(" ");
+      output.innerText = "Remaining Attempts: " + triesRemain;
+      console.log(triesRemain);
     }
+    // else if (missed.length) {
+
+    // }
     else {
       output.innerHTML = "<br>";
     }
     
     e.target.value = "";
-    //output.innerHTML = e.key;
     hiddenBox.innerText = hiddenWord;
-  }
+    }
 });
 
 function drawHangman(amount) { 
