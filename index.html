@@ -52,7 +52,7 @@
  
 <div class="container">
   <h1 style= "text-align:center; padding: 0; margin: 0;">Welcome To Hangman!</h1>
-  <h5 style="text-align:center; color:rgb(245, 99, 1); padding: 0;"> You have 10 guesses to figure out the word!</h5>
+  <h5 style="text-align:center; color:rgb(245, 99, 1); padding: 0;">You have 10 guesses to figure out the word!</h5>
 
   <div class="canvas-wrapper">
       <canvas id="myCanvas"></canvas>
@@ -145,15 +145,15 @@ guessBox.addEventListener("keydown", function (e) {
     console.log(triesAllocate, mistakes);
     if (word === hiddenWord) {
       output.innerText="Correct! The word was " + word;
-      return init();
+      init();
     }
     else if (mistakes >= triesAllocate) {
       output.innerText="Sorry, the correct answer was... " + word + " !";
-      return init();
+      init();
     }
     else if (missed.length) {
-      output.innerText = "Missed letters: " + missed.join(" ");
-      output.innerText = "Remaining Attempts: " + triesRemain;
+      output.innerHTML = "Missed letters: " + missed.join(" ") + "<br>Remaining Attempts: " + triesRemain;
+     
       console.log(triesRemain);
     }
     // else if (missed.length) {
